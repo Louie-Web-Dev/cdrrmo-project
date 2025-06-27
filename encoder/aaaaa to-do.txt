@@ -1,0 +1,129 @@
+
+add placeholder="ex:Surname"
+add oninput="capitalizeFirstLetter(this)"
+    <script>
+        function capitalizeFirstLetter(input) {
+            input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
+        }
+    </script>
+
+
+login
+logout
+save.php
+
+
+incident list 
+lagyan ng action details // isingit o idagdag ng column ng ??
+
+print ng overall
+print report final need free text
+
+sa report nalang eh free text
+description and details: free text
+
+incident details report // ems
+edit font weight
+
+ems report modification
+driver's name  // same as above or else
+hide and shows
+license number
+add tricyle same as incd
+action taken other actions  
+
+notification sound if the numbers got add on notification
+
+lipat mga files
+make dispatch team cannot see 'Others' action taken
+
+
+//pwede sa susunod pa
+isort yung incident type kung pwede
+dashboard
+dagdagan ng news sa baba
+admin
+mag add ng preference//settings
+activity log
+forgot password
+password complexity
+warning pag sasarado browser
+
+Browser Session Handling:
+
+Browsers often share sessions between tabs. If you log in with one account in one tab, it may affect the session in another tab.
+Try using different browsers (e.g., Chrome for one account, Firefox for another) or an incognito/private browsing window for each account.
+Session Cookies:
+
+Check if your sessions are implemented using cookies. If so, make sure that each account uses a different session cookie name or path to avoid conflicts.
+Localhost Subdomains:
+
+If you are using subdomains (e.g., account1.localhost, account2.localhost), make sure your session cookie settings allow for this.
+Clear Cookies:
+
+Clear cookies in your browser before trying to log in with a different account.
+PHP session_regenerate_id:
+
+Consider using session_regenerate_id(true) after a login to ensure a new session ID is generated, reducing the risk of session fixation.
+php
+Copy code
+session_regenerate_id(true);
+Remember that handling sessions securely and avoiding session conflicts can be more complex than it seems, especially in a development environment. If you are deploying the application, test it on a real server rather than just on localhost, as server and browser behavior might differ.
+
+
+
+
+                    <div class="upload-file">
+    <label for="fileInput">Pre-Hospital Patient care Report:</label>
+    <div class="file-input-container">
+        <input type="file" id="fileInput" name="fileInput" accept=".jpg, .jpeg, .png" onchange="displayFileName(this)">
+        <label class="file-label" id="fileLabel"><?php echo isset($fileInput) ? $fileInput : 'No file chosen'; ?></label>
+    </div>
+</div>
+
+<div class="upload-photo">
+    <label for="fileInput2">Image Incident:</label>
+    <div class="file-input-container">
+        <input type="file" id="fileInput2" name="fileInput2" accept=".jpg, .jpeg, .png" onchange="displayFileName(this)">
+        <label class="file-label" id="fileLabel2"><?php echo isset($fileInput2) ? $fileInput2 : 'No file chosen'; ?></label>
+    </div>
+</div>
+
+<script>
+function displayFileName(input) {
+    var fileLabel = document.getElementById(input.id + 'Label');
+    if (fileLabel) {
+        fileLabel.innerText = input.files.length > 0 ? input.files[0].name : 'No file chosen';
+    }
+}
+</script>
+
+
+<style>
+/* Style to visually hide the real file input */
+.file-input-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.file-input-container input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+</style>

@@ -1,0 +1,84 @@
+<?php
+session_start(); // Start the session
+
+// Check if the default entries value is not set in the session
+if (!isset($_SESSION['entries_default'])) {
+    // Set the default entries value in the session
+    $_SESSION['entries_default'] = 50;
+}
+
+// Include your database connection file or establish a connection here
+require_once "config.php";
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check the connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Get the number of entries to display
+$entries = isset($_SESSION['entries']) ? $_SESSION['entries'] : $_SESSION['entries_default']; // Use session variable if available, otherwise default to session default
+
+// Check if there is a search query
+$searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Define columns to be excluded from the calculation44
+//
+// isa mga nasa incident details
+$excludedColumns = array('id', 'Incident_ID', 'status', 'action_taken_others', 'closed_by', 'others', 'resolution_remarks', 'resolution_remarks', 'other', 'report_text', 'text_action_dispatch', 'text_action_arrive', 'text_victim_details', 'team_arrived_base', 'team_departed_scene', 'victim_details', 'prepared_by', 'position', 'encoded_by', 'encoder_position', 'noted_by', 'position_noted', 'vehicle_type', 'number_affected', 'age', 'contact', 'othervictims1', 'othervictims2', 'other_dispatch', 'source', 'caller_last_name', 'caller_first_name', 'caller_middle_initial', 'caller_address', 'specific_location', 'additional_details');
+
+// Allow searching by Incident_ID as well
+$query = "SELECT *, CONCAT(date, ' ', time) AS datetime_combined FROM incidents 
+          WHERE status IN ('New', 'Verified') 
+          AND (incident_type LIKE '%$searchQuery%' OR location LIKE '%$searchQuery%' OR Incident_ID LIKE '%$searchQuery%'
+               OR date LIKE '%$searchQuery%' OR verified_by LIKE '%$searchQuery%') 
+          ORDER BY datetime_combined DESC LIMIT $entries";
+
+$result = $conn->query($query);
+
+$tableBody = '';
+while ($row = $result->fetch_assoc()) {
+    // Count the number of filled columns
+    $filledColumns = 0;
+    $totalColumns = count($row) - count($excludedColumns); // Exclude specified columns
+
+    foreach ($row as $column => $value) {
+        // Check if the current column should be excluded
+        if (!in_array($column, $excludedColumns) && !empty($value)) {
+            $filledColumns++;
+        }
+    }
+
+    // Calculate the percentage
+    $percentage = round(($filledColumns / $totalColumns) * 100, 2);
+
+    // Build the table row
+    $tableBody .= '<tr>';
+    $tableBody .= '<td>' . $row['Incident_ID'] . '</td>';
+    $tableBody .= '<td>' . $row['datetime_combined'] . '</td>';
+    $tableBody .= '<td>' . $row['incident_type'] . '</td>';
+    $tableBody .= '<td>' . $row['location'] . '</td>';
+$tableBody .= '<td class="status-cell" data-incident-id="' . $row['id'] . '">' . $row['status'] . ' (' . $percentage . '%)' . ($row['status'] !== 'New' ? '<br>' . $row['verified_by'] : '') . '</td>';
+
+    $tableBody .= '<td>';
+    $tableBody .= '<button id="status-button-' . $row['id'] . '" class="btn ' . ($row['status'] === 'Verified' ? 'btn-success' : 'btn-warning') . '" onclick="changeStatusButton(' . $row['id'] . ', \'' . $row['status'] . '\')">';
+    $tableBody .= $row['status'] === 'Verified' ? 'Resolve' : 'Verify';
+    $tableBody .= '</button>';
+    $tableBody .= '<button class="edit-report-button custom-edit-button" data-incident-id="' . $row['id'] . '" onclick="openEditReport(' . $row['id'] . ')">';
+    $tableBody .= '<i class="fas fa-edit"></i>';
+    $tableBody .= '</button>';
+    $tableBody .= '<button class="inspect-button custom-inspect-button" data-incident-id="' . $row['id'] . '" onclick="openInspectModal(' . $row['id'] . ')">';
+    $tableBody .= '<i class="fa-solid fa-file"></i>';
+    $tableBody .= '</button>';
+
+    $tableBody .= '<button class="btn btn-change-status custom-button" onclick="changeStatus(' . $row['id'] . ', \'Archived\')">';
+    $tableBody .= '<i class="fas fa-trash"></i>';
+    $tableBody .= '</button>';
+    $tableBody .= '</td>';
+    $tableBody .= '</tr>';
+}
+
+echo $tableBody;
+
+$conn->close();
+?>

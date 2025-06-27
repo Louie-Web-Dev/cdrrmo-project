@@ -1,0 +1,63 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Apply a basic font and background color */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Style the dashboard container */
+.dashboard-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+
+}
+
+/* Style the header */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Style incident details */
+.incident-details {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.detail-label {
+    flex: 1;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.detail-value {
+    flex: 2;
+    padding: 5px;
+    border: 1px solid #ffffff;
+    border-radius: 3px;
+    background-color: #ffffff;
+}
+
+/* Style the link for the incident ID */
+.detail-value a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Hover effect for links */
+.detail-value a:hover {
+    text-decoration: underline;
+}
+
+/* Additional styling can be added as needed */
